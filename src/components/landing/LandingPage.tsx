@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,12 +22,18 @@ import {
   Award,
   Phone,
   Mail,
-  MapPin
+  MapPin,
+  Menu,
+  X
 } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useIsMobile } from '../../hooks/use-mobile';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const LandingPage = () => {
   const { isDark, toggleTheme } = useTheme();
+  const isMobile = useIsMobile();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   const products = [
     {
@@ -123,58 +128,113 @@ const LandingPage = () => {
     }
   ];
 
+  const mobileNavItems = [
+    { name: 'Features', href: '#features' },
+    { name: 'Products', href: '#products' },
+    { name: 'About', href: '#about' },
+    { name: 'Contact', href: '#contact' }
+  ];
+
   return (
     <div className="min-h-screen">
-      {/* Enhanced Header */}
+      {/* Enhanced Mobile-First Header */}
       <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Stethoscope className="w-7 h-7 text-white" />
+        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Stethoscope className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
             </div>
             <div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 MediqSystem
               </span>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Critical Care Solutions</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Critical Care Solutions</p>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={toggleTheme} className="rounded-full">
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-6">
+            {mobileNavItems.map((item) => (
+              <a key={item.name} href={item.href} className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                {item.name}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <Button variant="ghost" onClick={toggleTheme} className="rounded-full p-2">
               {isDark ? '☀️' : '🌙'}
             </Button>
-            <Link to="/login">
-              <Button variant="outline" className="hidden sm:flex">Login</Button>
-            </Link>
-            <Link to="/signup">
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600">Get Started</Button>
-            </Link>
+
+            {/* Mobile Menu */}
+            {isMobile ? (
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="sm" className="md:hidden p-2">
+                    <Menu className="w-5 h-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-72">
+                  <nav className="flex flex-col space-y-6 mt-8">
+                    {mobileNavItems.map((item) => (
+                      <a 
+                        key={item.name} 
+                        href={item.href} 
+                        className="text-lg font-medium text-gray-900 dark:text-white"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                    <div className="flex flex-col space-y-3 pt-6 border-t">
+                      <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Button variant="outline" className="w-full">Login</Button>
+                      </Link>
+                      <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600">Get Started</Button>
+                      </Link>
+                    </div>
+                  </nav>
+                </SheetContent>
+              </Sheet>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="outline" className="hidden sm:flex">Login</Button>
+                </Link>
+                <Link to="/signup">
+                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 text-sm sm:text-base px-3 sm:px-4">
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
 
-      {/* Enhanced Hero Section */}
-      <section className="relative py-24 px-4 overflow-hidden">
+      {/* Enhanced Mobile-First Hero Section */}
+      <section className="relative py-12 sm:py-16 lg:py-24 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900"></div>
         <div className="relative container mx-auto text-center">
-          <Badge className="mb-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0">
+          <Badge className="mb-4 sm:mb-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 text-xs sm:text-sm">
             🚀 Revolutionizing Critical Care Management
           </Badge>
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-fade-in leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 sm:mb-8 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
             Intelligent Business Solutions for Medical Equipment
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-10 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
             Streamline your medical equipment business with our comprehensive platform. From ventilators to patient monitors, 
             manage sales, service, and operations with precision and reliability in critical care environments.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Link to="/signup">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-8 py-4 text-lg shadow-2xl">
-                Start Free Trial <ArrowRight className="ml-2 w-5 h-5" />
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4 sm:px-0">
+            <Link to="/signup" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-2xl">
+                Start Free Trial <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
             </Link>
-            <Link to="/login">
-              <Button size="lg" variant="outline" className="px-8 py-4 text-lg border-2">
+            <Link to="/login" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg border-2">
                 Watch Demo
               </Button>
             </Link>
@@ -182,40 +242,40 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Enhanced Stats Section */}
-      <section className="py-20 px-4 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm">
+      {/* Enhanced Mobile-First Stats Section */}
+      <section className="py-12 sm:py-16 lg:py-20 px-4 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm">
         <div className="container mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center group hover:scale-105 transition-transform duration-300">
-                <div className={`w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-2xl transition-shadow`}>
-                  <stat.icon className="w-8 h-8 text-white" />
+                <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg group-hover:shadow-2xl transition-shadow`}>
+                  <stat.icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                 </div>
-                <div className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{stat.value}</div>
-                <div className="text-gray-600 dark:text-gray-300">{stat.label}</div>
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">{stat.value}</div>
+                <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Enhanced Features Section */}
-      <section className="py-20 px-4">
+      {/* Enhanced Mobile-First Features Section */}
+      <section id="features" className="py-12 sm:py-16 lg:py-20 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
               Why Healthcare Professionals Choose Us
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300">
               Built specifically for critical care and medical equipment management
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {features.map((feature, index) => (
               <Card key={index} className="text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <feature.icon className="w-8 h-8 text-white" />
+                <CardHeader className="pb-4">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <feature.icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                   </div>
                   <CardTitle className="text-lg">{feature.title}</CardTitle>
                 </CardHeader>
@@ -228,25 +288,25 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Enhanced Products Section */}
-      <section className="py-24 px-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900">
+      {/* Enhanced Mobile-First Products Section */}
+      <section id="products" className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900">
         <div className="container mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="text-5xl font-bold mb-6 text-gray-900 dark:text-white">
+          <div className="text-center mb-16 sm:mb-20">
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-white">
               Complete Medical Equipment Management Suite
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               From ventilators to patient monitoring systems, manage every aspect of your medical equipment business
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-10">
             {products.map((product) => (
               <Card key={product.id} className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 border-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm overflow-hidden">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between mb-6">
-                    <div className={`w-16 h-16 rounded-3xl ${product.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                      <product.icon className="w-8 h-8 text-white" />
+                    <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-3xl ${product.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                      <product.icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                     </div>
                     {product.popular && (
                       <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
@@ -289,36 +349,36 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Enhanced CTA Section */}
-      <section className="py-24 px-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
+      {/* Enhanced Mobile-First CTA Section */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative container mx-auto text-center">
-          <h2 className="text-5xl font-bold text-white mb-8">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 sm:mb-8">
             Ready to Revolutionize Your Medical Equipment Business?
           </h2>
-          <p className="text-xl text-blue-100 mb-10 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-blue-100 mb-8 sm:mb-10 max-w-3xl mx-auto">
             Join hundreds of healthcare professionals who trust MediqSystem for managing critical care equipment, 
             from ventilators to patient monitoring systems.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link to="/signup">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg shadow-2xl">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center px-4 sm:px-0">
+            <Link to="/signup" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-white text-blue-600 hover:bg-gray-100 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg shadow-2xl">
                 Start Your Free Trial Today
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg">
+            <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-blue-600 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg">
               Schedule Demo
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Enhanced Footer */}
-      <footer className="bg-gray-900 text-white py-16 px-4">
+      {/* Enhanced Mobile-First Footer */}
+      <footer id="contact" className="bg-gray-900 text-white py-12 sm:py-16 px-4">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div className="space-y-4 sm:col-span-2 lg:col-span-1">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
                   <Stethoscope className="w-6 h-6 text-white" />
