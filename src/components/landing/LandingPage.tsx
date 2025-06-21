@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -412,15 +413,15 @@ const LandingPage = () => {
               <div className="space-y-3 text-gray-400">
                 <div className="flex items-center space-x-2">
                   <MapPin className="w-4 h-4" />
-                  <span>Bangalore, India</span>
+                  <span>Begur, Bangalore 560068</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Phone className="w-4 h-4" />
-                  <span>+91 XXX XXX XXXX</span>
+                  <span>+91 9916866688</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Mail className="w-4 h-4" />
-                  <span>contact@mediqsystem.com</span>
+                  <span>sales@radhikabme.com</span>
                 </div>
               </div>
             </div>
